@@ -6,12 +6,22 @@ public class Animal implements Serializable {
     private String name;
     private int happiness;
     private int hunger;
+    private String type;
 
-    public Animal(String name, int happiness, int hunger) {
+    public Animal(String name, int happiness, int hunger, String type) {
         this.name = name;
         this.happiness = happiness;
         this.hunger = hunger;
+        this.type = type;
     }
+
+   /* public void updateAnimal(String Name, String Type, int Happiness, int Hunger) {
+        this.name = Name;
+        this.type = Type;
+        this.happiness = Happiness;
+        this.hunger = Hunger;
+    }
+    */
 
     public long getId() {
         return id;
@@ -24,7 +34,9 @@ public class Animal implements Serializable {
     public String getName() {
         return name;
     }
-
+    public void setName(String name) {
+        this.name = name;
+    }
     public int getHappiness() {
         return happiness;
     }
@@ -41,15 +53,16 @@ public class Animal implements Serializable {
         this.hunger = hunger;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getType() {
+        return type;
     }
-    public String getDescription() {
-        return name + ": " + "Happiness: " + happiness + ", Hunger: " + hunger;
+    @Override
+    public String toString() {
+        return name + "   " + type ;
+
     }
 }

@@ -20,6 +20,7 @@ public class Pet extends AppCompatActivity {
 
     private int happiness = 50;
     private int hunger = 50;
+    private String type = "cat";
 
     private TextView happinessTextView;
     private TextView hungerTextView;
@@ -34,15 +35,14 @@ public class Pet extends AppCompatActivity {
 
         dbHelper = new PetDatabaseHelper(this);
 
-        // Получите информацию о животном из интента или базы данных
+        // Получение информации о животном из интента или базы данных
         Intent intent = getIntent();
         String animalName = intent.getStringExtra("animalName");
         String animalDescription = intent.getStringExtra("animalDescription");
 
-        // Используйте полученную информацию по мере необходимости
-        setTitle(animalName); // Установите заголовок активности в имя животного
+        // Использование инфы
+        setTitle(animalName);
 
-        // Изменено: Используйте Animal вместо PetData
         animal = loadAnimalFromDatabase(animalName);
 
         happinessTextView = findViewById(R.id.happinessTextView);
@@ -74,7 +74,7 @@ public class Pet extends AppCompatActivity {
             }
         });
 
-        // Регулярно обновляйте состояние Тамагочи
+        // обновление состояния Тамагочи
         handler.postDelayed(tamagotchiRunnable, 10000); // каждые 10 секунд
     }
 
@@ -87,13 +87,15 @@ public class Pet extends AppCompatActivity {
 
         Cursor cursor = db.query("animal", columns, selection, selectionArgs, null, null, null);
 
-        Animal loadedAnimal = new Animal(animalName, happiness, hunger);
+        Animal loadedAnimal = new Animal(animalName, happiness, hunger, type);
 
         if (cursor.moveToFirst()) {
             loadedAnimal.setId(cursor.getLong(cursor.getColumnIndex("_id")));
             loadedAnimal.setName(cursor.getString(cursor.getColumnIndex("name")));
             loadedAnimal.setHappiness(cursor.getInt(cursor.getColumnIndex("happiness")));
             loadedAnimal.setHunger(cursor.getInt(cursor.getColumnIndex("hunger")));
+            loadedAnimal.setType(cursor.getString(cursor.getColumnIndex("type")));
+
         }
 
         cursor.close();
@@ -106,7 +108,6 @@ public class Pet extends AppCompatActivity {
         hunger = Math.max(0, hunger - 10);
         updateUI();
 
-        // Сохраните обновленные данные о питомце в базу данных
         saveAnimalToDatabase();
     }
 
@@ -114,15 +115,12 @@ public class Pet extends AppCompatActivity {
         happiness = Math.min(100, happiness+ 10);
         updateUI();
 
-        // Сохраните обновленные данные о питомце в базу данных
         saveAnimalToDatabase();
     }
 
     private void updateUI() {
         happinessTextView.setText("Happiness: " + happiness);
         hungerTextView.setText("Hunger: " + hunger);
-
-        // Обновите изображение Тамагочи в зависимости от состояния
         if (happiness > 70 && hunger < 30) {
             tamagotchiImageView.setImageResource(R.drawable.happy_full);
         } else if (happiness > 30 && hunger < 70) {
@@ -141,24 +139,20 @@ public class Pet extends AppCompatActivity {
         values.put("hunger", hunger);
 
         db.update("animal", values, "_id=?", new String[]{String.valueOf(animal.getId())});
-
         db.close();
     }
 
     private Runnable tamagotchiRunnable = new Runnable() {
         @Override
         public void run() {
-            // Уменьшите уровень счастья и голода с течением времени
-            happiness = Math.max(0, happiness - 5);
-            hunger = Math.min(100, hunger + 5);
+            happiness = Math.max(0, happiness - 5);// минус счастье
+            hunger = Math.min(100, hunger + 5);// плюс поел
 
             updateUI();
 
-            // Сохраните обновленные данные о питомце в базу данных
-            saveAnimalToDatabase();
+            saveAnimalToDatabase();// Сохранение
 
-            // Планируйте следующий запуск через 10 секунд
-            handler.postDelayed(this, 10000);
+            handler.postDelayed(this, 10000);// следующий запуск через 10 секунд
         }
     };
 }
