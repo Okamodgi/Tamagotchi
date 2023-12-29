@@ -1,8 +1,11 @@
 package com.example.tamagotchi;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +16,19 @@ import android.widget.Toast;
 public class Fragment_add extends Fragment {
     private EditText name;
     private EditText type;
+    private Drawable originalBackground;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
         PetDatabaseHelper petDatabaseHelper = new PetDatabaseHelper(requireContext());
-
-        EditText name = view.findViewById(R.id.name);
-        EditText type = view.findViewById(R.id.type_of_animal);
+        Drawable back = getActivity().getWindow().getDecorView().getBackground();
+        name = view.findViewById(R.id.name);
+        type = view.findViewById(R.id.type_of_animal);
+        view.setBackground(back);
 
         setEditTextFocus(name);
-        setEditTextFocus(type);
+
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,13 +36,30 @@ public class Fragment_add extends Fragment {
                 setEditTextFocus(name);
             }
         });
-        type.setOnClickListener(new View.OnClickListener() {
+
+        Button catButton = view.findViewById(R.id.cat);
+        catButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setEditTextFocus(type);
+                type.setText("Кот");
             }
         });
 
+        Button parrotButton = view.findViewById(R.id.parrot);
+        parrotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                type.setText("Попугай");
+            }
+        });
+
+        Button dogButton = view.findViewById(R.id.dog);
+        dogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                type.setText("Собака");
+            }
+        });
         Button saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,21 +74,26 @@ public class Fragment_add extends Fragment {
 
                     petDatabaseHelper.addPets(editedName, "50", "50", editedType);
 
+                    Log.d("Fragment_add", "Data saved to database: " + editedName + ", " + editedType);
+
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("updatedAnimal", newAnimal);
 
                     requireActivity().setResult(requireActivity().RESULT_OK, resultIntent);
+                   // requireActivity().getSupportFragmentManager().popBackStack();
+                   // ((MainActivity) requireActivity()).updateAnimalList();
 
-                    requireActivity().finish();
-                }
+                    requireActivity().finish();}
             }
-        });
+    });
 
         Button backButton1 = view.findViewById(R.id.back1);
         backButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getWindow().getDecorView().setBackground(originalBackground);
+                ((MainActivity) requireActivity()).updateAnimalList();
             }
         });
         return view;
@@ -79,6 +106,3 @@ public class Fragment_add extends Fragment {
         editText.requestFocus();
     }
 }
-
-                    /*PetDatabaseHelper dbHelper = new PetDatabaseHelper(requireContext());
-                    dbHelper.addPets(editedName, "50", "50", editedType);*/

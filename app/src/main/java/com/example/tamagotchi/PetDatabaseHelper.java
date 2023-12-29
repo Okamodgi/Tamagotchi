@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,9 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_HAPPINESS + " INTEGER,"
-                + COLUMN_TYPE + " TEXT,"
-                + COLUMN_HUNGER + " INTEGER);");
+                + COLUMN_HUNGER + " INTEGER,"
+                + COLUMN_TYPE + " TEXT);"
+                );
 
 
     }
@@ -71,38 +73,45 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
     }
    @SuppressLint("Range")
    public List<Animal> getAllAnimals() {
-        List<Animal> animals = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-       try (Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ANIMAL, null)) {
+       List<Animal> animals = new ArrayList<>();
+       SQLiteDatabase db = getReadableDatabase();
+       Cursor cursor = null;
+
+       try {
+           cursor = db.rawQuery("SELECT * FROM " + TABLE_ANIMAL, null);
+
            if (cursor != null && cursor.moveToFirst()) {
                do {
                    String name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
-                   String type = cursor.getString(cursor.getColumnIndex(COLUMN_TYPE));
                    int happiness = cursor.getInt(cursor.getColumnIndex(COLUMN_HAPPINESS));
                    int hunger = cursor.getInt(cursor.getColumnIndex(COLUMN_HUNGER));
+                   String type = cursor.getString(cursor.getColumnIndex(COLUMN_TYPE));
+
                    animals.add(new Animal(name, happiness, hunger, type));
                } while (cursor.moveToNext());
            }
        } catch (Exception e) {
-           e.printStackTrace();
+           Log.e("PetDatabaseHelper", "Error getting all animals: " + e.getMessage());
        } finally {
+           if (cursor != null) {
+               cursor.close();
+           }
            db.close();
        }
+
        return animals;
    }
+    public void deleteAnimal(Animal animal) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            // Удаление питомца по имени
+            db.delete(TABLE_ANIMAL, COLUMN_NAME + "=?", new String[]{animal.getName()});
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
 }
-/*ContentValues values1 = new ContentValues();
-        values1.put(COLUMN_NAME, "PET1");
-        values1.put(COLUMN_HAPPINESS, 50);
-        values1.put(COLUMN_TYPE, "cat");
-        values1.put(COLUMN_HUNGER, 50);
-        db.insert(TABLE_ANIMAL, null, values1);
-
-        ContentValues values2 = new ContentValues();
-        values2.put(COLUMN_NAME, "PET2");
-        values2.put(COLUMN_HAPPINESS, 50);
-        values2.put(COLUMN_TYPE, "dog");
-        values2.put(COLUMN_HUNGER, 50);
-        db.insert(TABLE_ANIMAL, null, values2);
-
-         */

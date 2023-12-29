@@ -24,6 +24,8 @@
         <activity
             android:name=".Pet">
         </activity>
+        <activity android:name=".miniGameQuiz" />
+        <activity android:name=".miniGameSearch" />
     </application>
 
 </manifest>

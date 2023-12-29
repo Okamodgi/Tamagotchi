@@ -7,14 +7,13 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragmentСontainer"
         android:layout_width="409dp"
         android:layout_height="356dp"
         app:layout_constraintBottom_toTopOf="@+id/addButton"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="2dp">
-    </FrameLayout>
+        tools:layout_editor_absoluteX="2dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/addButton"
@@ -36,9 +35,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:ignore="MissingConstraints" >
+        tools:ignore="MissingConstraints" />
 
-    </ListView>
 
     <TextView
         android:id="@+id/textView"
@@ -52,6 +50,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:ignore="MissingConstraints" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/addButton"
+        tools:layout_editor_absoluteX="-2dp"/>
+
 
     <ImageView
         android:id="@+id/imageView"

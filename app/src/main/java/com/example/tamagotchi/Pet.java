@@ -1,46 +1,60 @@
 package com.example.tamagotchi;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Random;
+
 public class Pet extends AppCompatActivity {
+
+    public static ArrayAdapter<Object> adapter;
     private PetDatabaseHelper dbHelper;
     private Animal animal;
-
     private int happiness = 50;
     private int hunger = 50;
-    private String type = "cat";
-
+    private String type;
     private TextView happinessTextView;
     private TextView hungerTextView;
     private ImageView tamagotchiImageView;
 
     private Handler handler = new Handler();
 
+    // Переменные для взаимодействия с базой данных и хранения настроек
+    private PetDatabaseHelper petDatabaseHelper;
+    private SharedPreferences sharedPref;
+
+    private static final String KEY_HAPPINESS = "happiness";
+    private static final String KEY_HUNGER = "hunger";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pet);
 
-        dbHelper = new PetDatabaseHelper(this);
+        //petDatabaseHelper = new PetDatabaseHelper();
+        //sharedPref = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 
-        // Получение информации о животном из интента или базы данных
+       // dbHelper = new PetDatabaseHelper(this);
+
         Intent intent = getIntent();
         String animalName = intent.getStringExtra("animalName");
-        String animalDescription = intent.getStringExtra("animalDescription");
 
-        // Использование инфы
         setTitle(animalName);
 
         animal = loadAnimalFromDatabase(animalName);
@@ -56,6 +70,8 @@ public class Pet extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveAnimalToDatabase();
+                MainActivity.adapter.notifyDataSetChanged();
                 onBackPressed();
             }
         });
@@ -70,36 +86,50 @@ public class Pet extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playWithTamagotchi();
+                int randomGame = new Random().nextInt(2);
+
+                if (randomGame == 0) {
+                    playWithTamagotchi2();
+                } else {
+                    playWithTamagotchi2();
+                }
             }
         });
 
-        // обновление состояния Тамагочи
-        handler.postDelayed(tamagotchiRunnable, 10000); // каждые 10 секунд
+        handler.postDelayed(tamagotchiRunnable, 10000);
     }
 
     @SuppressLint("Range")
     private Animal loadAnimalFromDatabase(String animalName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] columns = {"_id", "name", "happiness", "hunger"};
-        String selection = "name=?";
-        String[] selectionArgs = {animalName};
+        Animal loadedAnimal = null;
 
-        Cursor cursor = db.query("animal", columns, selection, selectionArgs, null, null, null);
+        try {
+            String[] columns = {"_id", "name", "happiness", "hunger", "type"};
+            String selection = "name=?";
+            String[] selectionArgs = {animalName};
 
-        Animal loadedAnimal = new Animal(animalName, happiness, hunger, type);
+            Cursor cursor = db.query("animal", columns, selection, selectionArgs, null, null, null);
 
-        if (cursor.moveToFirst()) {
-            loadedAnimal.setId(cursor.getLong(cursor.getColumnIndex("_id")));
-            loadedAnimal.setName(cursor.getString(cursor.getColumnIndex("name")));
-            loadedAnimal.setHappiness(cursor.getInt(cursor.getColumnIndex("happiness")));
-            loadedAnimal.setHunger(cursor.getInt(cursor.getColumnIndex("hunger")));
-            loadedAnimal.setType(cursor.getString(cursor.getColumnIndex("type")));
+            if (cursor != null && cursor.moveToFirst()) {
+                loadedAnimal = new Animal(
+                        cursor.getString(cursor.getColumnIndex("name")),
+                        cursor.getInt(cursor.getColumnIndex("happiness")),
+                        cursor.getInt(cursor.getColumnIndex("hunger")),
+                        cursor.getString(cursor.getColumnIndex("type"))
+                );
 
+                loadedAnimal.setId(cursor.getLong(cursor.getColumnIndex("_id")));
+            }
+
+            if (cursor != null) {
+                cursor.close();
+            }
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
         }
-
-        cursor.close();
-        db.close();
 
         return loadedAnimal;
     }
@@ -107,15 +137,15 @@ public class Pet extends AppCompatActivity {
     private void feedTamagotchi() {
         hunger = Math.max(0, hunger - 10);
         updateUI();
-
         saveAnimalToDatabase();
     }
 
-    private void playWithTamagotchi() {
-        happiness = Math.min(100, happiness+ 10);
+    private void playWithTamagotchi2() {
+        happiness = Math.min(100, happiness + 10);
         updateUI();
-
         saveAnimalToDatabase();
+        Intent intent = new Intent(Pet.this, miniGameSearch.class);
+        startActivity(intent);
     }
 
     private void updateUI() {
@@ -132,28 +162,58 @@ public class Pet extends AppCompatActivity {
 
     private void saveAnimalToDatabase() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            ContentValues values = new ContentValues();
+            values.put("happiness", happiness);
+            values.put("hunger", hunger);
 
-        ContentValues values = new ContentValues();
-        values.put("name", animal.getName());
-        values.put("happiness", happiness);
-        values.put("hunger", hunger);
-
-        db.update("animal", values, "_id=?", new String[]{String.valueOf(animal.getId())});
-        db.close();
+            int rowsAffected = db.update("animal", values, "_id=?", new String[]{String.valueOf(animal.getId())});
+            Log.d("PetActivity", "Rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            Log.e("PetActivity", "Error saving to database: " + e.getMessage());
+        } finally {
+            db.close();
+        }
     }
 
     private Runnable tamagotchiRunnable = new Runnable() {
         @Override
         public void run() {
-            happiness = Math.max(0, happiness - 5);// минус счастье
-            hunger = Math.min(100, hunger + 5);// плюс поел
+            happiness = Math.max(0, happiness - 5);
+            hunger = Math.min(100, hunger + 5);
 
             updateUI();
+            saveAnimalToDatabase();
 
-            saveAnimalToDatabase();// Сохранение
-
-            handler.postDelayed(this, 10000);// следующий запуск через 10 секунд
+            handler.postDelayed(this, 10000);
         }
     };
-}
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveAnimalToDatabase();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animal = loadAnimalFromDatabase(animal.getName());
+        updateUI();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_HAPPINESS, happiness);
+        outState.putInt(KEY_HUNGER, hunger);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        happiness = savedInstanceState.getInt(KEY_HAPPINESS, 50);
+        hunger = savedInstanceState.getInt(KEY_HUNGER, 50);
+        updateUI();
+    }
+}

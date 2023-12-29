@@ -1,8 +1,12 @@
 package com.example.tamagotchi;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
 
+        animalListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteDialog(position);
+                return true;
+            }
+        });
+
         Button addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,37 +59,60 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container, addFragment);
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
-      // ArrayAdapter<Animal> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, animals);// Создание ArrayAdapter для отображения списка питомцев
-      // animalListView.setAdapter(adapter);
        animalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Animal selectedAnimal = animals.get(position);// Получение выбранного животного
 
-                Intent intent = new Intent(MainActivity.this, Pet.class);// Запуск новой активити для отображения информации о выбранном животном
+                Intent intent = new Intent(MainActivity.this, Pet.class);// Запуск новой активити
                 intent.putExtra("animalName", selectedAnimal.getName());
                 startActivity(intent);
             }
         });
     }
+    private void showDeleteDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Удаление")
+                .setMessage("Вы уверены, что хотите сдать в приют этого питомца?")
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteAnimal(position);
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+    private void deleteAnimal(int position) {
+        Animal deletedAnimal = animals.get(position);
+        databaseHelper.deleteAnimal(deletedAnimal);
+        animals.remove(position);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Питомец удален", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra("updatedAnimal")) {
+                Animal updatedAnimal = (Animal) data.getSerializableExtra("updatedAnimal");
+
+                animals.add(updatedAnimal);
+                adapter.notifyDataSetChanged();
+
+            }
+        }
+    }
+    public void updateAnimalList() {
+        animals.clear();
+        animals.addAll(databaseHelper.getAllAnimals());
+        adapter.notifyDataSetChanged();
+    }
 }
- /* animalListView.setOnItemClickListener((parent, view, position, id) -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("animal", animals.get(position)); // Передаем выбранный объект Computer
 
-            int idPets = (int) animals.get(position).getId();
-            String nameComp = animals.get(position).getName();
-            int happiness = animals.get(position).getHappiness();
-            int hunger = animals.get(position).getHunger();
-            String Type = animals.get(position).getType();
-            bundle.putInt("id", idPets);
-            bundle.putString("name", nameComp);
-            bundle.putInt("happiness", happiness);
-            bundle.putInt("hunger", hunger);
-            bundle.putString("type", Type);
-
-        });*/
+//синглтон
