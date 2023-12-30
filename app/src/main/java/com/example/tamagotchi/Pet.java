@@ -65,7 +65,7 @@ public class Pet extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveAnimalToDatabase();
-                saveInstanceStateToSharedPreferences();
+                saveInstanceStateToSharedPreferences(animal.getName());
                 MainActivity.adapter.notifyDataSetChanged();
                 onBackPressed();
             }
@@ -188,27 +188,27 @@ public class Pet extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         saveAnimalToDatabase();
-        saveInstanceStateToSharedPreferences();
+        saveInstanceStateToSharedPreferences(animal.getName());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         animal = loadAnimalFromDatabase(animal.getName());
-        restoreInstanceStateFromSharedPreferences();
+        restoreInstanceStateFromSharedPreferences(animal.getName());
         updateUI();
     }
 
-    private void saveInstanceStateToSharedPreferences() {
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+    private void saveInstanceStateToSharedPreferences(String animalName) {
+        sharedPref = getSharedPreferences(animalName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(KEY_HAPPINESS, happiness);
         editor.putInt(KEY_HUNGER, hunger);
         editor.apply();
     }
 
-    private void restoreInstanceStateFromSharedPreferences() {
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+    private void restoreInstanceStateFromSharedPreferences(String animalName) {
+        sharedPref = getSharedPreferences(animalName, Context.MODE_PRIVATE);
         happiness = sharedPref.getInt(KEY_HAPPINESS, 50);
         hunger = sharedPref.getInt(KEY_HUNGER, 50);
     }
