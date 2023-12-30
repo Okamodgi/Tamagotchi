@@ -59,11 +59,10 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Обновление базы данных, например, при изменении схемы базы данных
+        // Обновление базы данных
         try {
             db.execSQL("DROP TABLE " + TABLE_ANIMAL);
         } catch (Exception exception) {
-            // Обработка ошибок
         } finally {
             onCreate(db);
         }

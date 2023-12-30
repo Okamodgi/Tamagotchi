@@ -191,9 +191,7 @@ public class Pet extends AppCompatActivity {
             values.put("hunger", hunger);
 
             int rowsAffected = db.update("animal", values, "_id=?", new String[]{String.valueOf(animal.getId())});
-            Log.d("PetActivity", "Rows affected: " + rowsAffected);
         } catch (Exception e) {
-            Log.e("PetActivity", "Error saving to database: " + e.getMessage());
         } finally {
             db.close();
         }

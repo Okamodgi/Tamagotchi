@@ -58,8 +58,8 @@ public class miniGameSearch extends AppCompatActivity {
 
     private void setRandomPosition(View view, ViewGroup parent) {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                dpToPx(60), // Устанавливаем ширину в 60dp
-                dpToPx(60)); // Устанавливаем высоту в 60dp
+                dpToPx(60),
+                dpToPx(60));
 
         // Генерируем случайные координаты в пределах родительского представления
         int maxX = parent.getWidth() - view.getWidth();

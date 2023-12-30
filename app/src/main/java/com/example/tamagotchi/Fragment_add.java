@@ -29,7 +29,6 @@ public class Fragment_add extends Fragment {
 
         setEditTextFocus(name);
 
-
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
