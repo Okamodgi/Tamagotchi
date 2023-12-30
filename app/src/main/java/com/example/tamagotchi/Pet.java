@@ -86,7 +86,7 @@ public class Pet extends AppCompatActivity {
                 if (randomGame == 0) {
                     playWithTamagotchi();
                 } else {
-                    playWithTamagotchi();
+                    playWithTamagotchi2();
                 }
             }
         });
@@ -136,6 +136,13 @@ public class Pet extends AppCompatActivity {
     }
 
     private void playWithTamagotchi() {
+        happiness = Math.min(100, happiness + 10);
+        updateUI();
+        saveAnimalToDatabase();
+        Intent intent = new Intent(Pet.this, miniGameQuiz.class);
+        startActivity(intent);
+    }
+    private void playWithTamagotchi2() {
         happiness = Math.min(100, happiness + 10);
         updateUI();
         saveAnimalToDatabase();
