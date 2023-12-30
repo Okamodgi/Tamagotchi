@@ -131,6 +131,9 @@ public class Pet extends AppCompatActivity {
 
     private void feedTamagotchi() {
         hunger = Math.max(0, hunger - 10);
+        if (hunger > 0) {
+            happiness = Math.min(100, happiness + 5);
+        }
         updateUI();
         saveAnimalToDatabase();
     }
