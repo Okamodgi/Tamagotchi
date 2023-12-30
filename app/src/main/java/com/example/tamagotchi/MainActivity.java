@@ -95,16 +95,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            if (data != null && data.hasExtra("updatedAnimal")) {
-                Animal updatedAnimal = (Animal) data.getSerializableExtra("updatedAnimal");
-
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.hasExtra("updatedAnimal")) {
+            Animal updatedAnimal = (Animal) data.getSerializableExtra("updatedAnimal");
+            if (updatedAnimal != null) {
                 animals.add(updatedAnimal);
                 adapter.notifyDataSetChanged();
-
             }
         }
     }
+
     public void updateAnimalList() {
         animals.clear();
         animals.addAll(databaseHelper.getAllAnimals());

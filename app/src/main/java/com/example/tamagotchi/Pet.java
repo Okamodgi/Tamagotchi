@@ -15,9 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Random;
 
 public class Pet extends AppCompatActivity {
@@ -27,9 +25,11 @@ public class Pet extends AppCompatActivity {
     private Animal animal;
     private int happiness = 50;
     private int hunger = 50;
+    private String type ;
     private TextView happinessTextView;
     private TextView hungerTextView;
     private ImageView tamagotchiImageView;
+    private ImageView imagePet;
 
     private Handler handler = new Handler();
 
@@ -46,6 +46,11 @@ public class Pet extends AppCompatActivity {
 
         dbHelper = new PetDatabaseHelper(this);
 
+        tamagotchiImageView = findViewById(R.id.tamagotchiImageView);
+        imagePet = findViewById(R.id.imagePet);
+        happinessTextView = findViewById(R.id.happinessTextView);
+        hungerTextView = findViewById(R.id.hungerTextView);
+
         Intent intent = getIntent();
         String animalName = intent.getStringExtra("animalName");
 
@@ -53,9 +58,8 @@ public class Pet extends AppCompatActivity {
 
         animal = loadAnimalFromDatabase(animalName);
 
-        happinessTextView = findViewById(R.id.happinessTextView);
-        hungerTextView = findViewById(R.id.hungerTextView);
-        tamagotchiImageView = findViewById(R.id.tamagotchiImageView);
+        tamagotchiImageView.setImageResource(animal.getImageResourceId());
+
 
         Button feedButton = findViewById(R.id.feedButton);
         Button playButton = findViewById(R.id.playButton);
@@ -115,7 +119,20 @@ public class Pet extends AppCompatActivity {
                 );
 
                 loadedAnimal.setId(cursor.getLong(cursor.getColumnIndex("_id")));
-            }
+                loadedAnimal.setType(cursor.getString(cursor.getColumnIndex("type")));
+
+                type = loadedAnimal.getType();
+
+                if ("Кот".equals(type)) {
+                    imagePet.setImageResource(R.drawable.cats);
+                } else if ("Попугай".equals(type)) {
+                    imagePet.setImageResource(R.drawable.pop);
+                } else {
+                    imagePet.setImageResource(R.drawable.dog);
+                }
+
+                tamagotchiImageView.setImageResource(loadedAnimal.getImageResourceId());
+                }
 
             if (cursor != null) {
                 cursor.close();
@@ -157,12 +174,13 @@ public class Pet extends AppCompatActivity {
         happinessTextView.setText("Happiness: " + happiness);
         hungerTextView.setText("Hunger: " + hunger);
         if (happiness > 70 && hunger < 30) {
-            tamagotchiImageView.setImageResource(R.drawable.happy_full);
+            tamagotchiImageView.setImageResource(R.drawable.ochen_dovolnoe);
         } else if (happiness > 30 && hunger < 70) {
-            tamagotchiImageView.setImageResource(R.drawable.normal);
+            tamagotchiImageView.setImageResource(R.drawable.dovolnoe);
         } else {
-            tamagotchiImageView.setImageResource(R.drawable.sad_hungry);
+            tamagotchiImageView.setImageResource(R.drawable.not_dovolnoe);
         }
+
     }
 
     private void saveAnimalToDatabase() {
@@ -190,7 +208,7 @@ public class Pet extends AppCompatActivity {
             updateUI();
             saveAnimalToDatabase();
 
-            handler.postDelayed(this, 10000);
+            handler.postDelayed(this, 25000);
         }
     };
 

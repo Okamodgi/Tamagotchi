@@ -80,8 +80,8 @@ public class Fragment_add extends Fragment {
                     resultIntent.putExtra("updatedAnimal", newAnimal);
 
                     requireActivity().setResult(requireActivity().RESULT_OK, resultIntent);
-                   // requireActivity().getSupportFragmentManager().popBackStack();
-                   // ((MainActivity) requireActivity()).updateAnimalList();
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    ((MainActivity) requireActivity()).updateAnimalList();
 
                     requireActivity().finish();}
             }

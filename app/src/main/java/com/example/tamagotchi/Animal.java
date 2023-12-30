@@ -7,12 +7,14 @@ public class Animal implements Serializable {
     private int happiness;
     private int hunger;
     private String type;
+    private int imageResourceId;
 
     public Animal(String name, int happiness, int hunger, String type) {
         this.name = name;
         this.happiness = happiness;
         this.hunger = hunger;
         this.type = type;
+        this.imageResourceId = imageResourceId;
     }
 
    /* public void updateAnimal(String Name, String Type, int Happiness, int Hunger) {
@@ -63,6 +65,8 @@ public class Animal implements Serializable {
     @Override
     public String toString() {
         return name + "   " + type ;
-
+    }
+    public int getImageResourceId() {
+        return imageResourceId;
     }
 }
