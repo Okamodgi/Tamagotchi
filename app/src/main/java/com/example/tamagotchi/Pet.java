@@ -1,9 +1,8 @@
 package com.example.tamagotchi;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -28,7 +27,6 @@ public class Pet extends AppCompatActivity {
     private Animal animal;
     private int happiness = 50;
     private int hunger = 50;
-    private String type;
     private TextView happinessTextView;
     private TextView hungerTextView;
     private ImageView tamagotchiImageView;
@@ -36,7 +34,6 @@ public class Pet extends AppCompatActivity {
     private Handler handler = new Handler();
 
     // Переменные для взаимодействия с базой данных и хранения настроек
-    private PetDatabaseHelper petDatabaseHelper;
     private SharedPreferences sharedPref;
 
     private static final String KEY_HAPPINESS = "happiness";
@@ -47,10 +44,7 @@ public class Pet extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pet);
 
-        //petDatabaseHelper = new PetDatabaseHelper();
-        //sharedPref = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-       // dbHelper = new PetDatabaseHelper(this);
+        dbHelper = new PetDatabaseHelper(this);
 
         Intent intent = getIntent();
         String animalName = intent.getStringExtra("animalName");
@@ -71,6 +65,7 @@ public class Pet extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveAnimalToDatabase();
+                saveInstanceStateToSharedPreferences();
                 MainActivity.adapter.notifyDataSetChanged();
                 onBackPressed();
             }
@@ -89,9 +84,9 @@ public class Pet extends AppCompatActivity {
                 int randomGame = new Random().nextInt(2);
 
                 if (randomGame == 0) {
-                    playWithTamagotchi2();
+                    playWithTamagotchi();
                 } else {
-                    playWithTamagotchi2();
+                    playWithTamagotchi();
                 }
             }
         });
@@ -140,7 +135,7 @@ public class Pet extends AppCompatActivity {
         saveAnimalToDatabase();
     }
 
-    private void playWithTamagotchi2() {
+    private void playWithTamagotchi() {
         happiness = Math.min(100, happiness + 10);
         updateUI();
         saveAnimalToDatabase();
@@ -193,13 +188,29 @@ public class Pet extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         saveAnimalToDatabase();
+        saveInstanceStateToSharedPreferences();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         animal = loadAnimalFromDatabase(animal.getName());
+        restoreInstanceStateFromSharedPreferences();
         updateUI();
+    }
+
+    private void saveInstanceStateToSharedPreferences() {
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(KEY_HAPPINESS, happiness);
+        editor.putInt(KEY_HUNGER, hunger);
+        editor.apply();
+    }
+
+    private void restoreInstanceStateFromSharedPreferences() {
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        happiness = sharedPref.getInt(KEY_HAPPINESS, 50);
+        hunger = sharedPref.getInt(KEY_HUNGER, 50);
     }
 
     @Override

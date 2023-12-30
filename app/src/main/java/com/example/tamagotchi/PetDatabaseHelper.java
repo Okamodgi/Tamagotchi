@@ -28,16 +28,16 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Создание таблицы при первом запуске приложения
         db.execSQL("CREATE TABLE " + TABLE_ANIMAL + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_HAPPINESS + " INTEGER,"
                 + COLUMN_HUNGER + " INTEGER,"
                 + COLUMN_TYPE + " TEXT);"
-                );
-
-
+        );
     }
+
     public void addPets(String name, String happiness, String hunger, String type) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
@@ -53,59 +53,59 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
+            db.close();
         }
-        db.close();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        try
-        {
+        // Обновление базы данных, например, при изменении схемы базы данных
+        try {
             db.execSQL("DROP TABLE " + TABLE_ANIMAL);
-        }
-        catch (Exception exception)
-        {
-
-        }
-        finally {
+        } catch (Exception exception) {
+            // Обработка ошибок
+        } finally {
             onCreate(db);
         }
     }
-   @SuppressLint("Range")
-   public List<Animal> getAllAnimals() {
-       List<Animal> animals = new ArrayList<>();
-       SQLiteDatabase db = getReadableDatabase();
-       Cursor cursor = null;
 
-       try {
-           cursor = db.rawQuery("SELECT * FROM " + TABLE_ANIMAL, null);
+    @SuppressLint("Range")
+    public List<Animal> getAllAnimals() {
+        List<Animal> animals = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
 
-           if (cursor != null && cursor.moveToFirst()) {
-               do {
-                   String name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
-                   int happiness = cursor.getInt(cursor.getColumnIndex(COLUMN_HAPPINESS));
-                   int hunger = cursor.getInt(cursor.getColumnIndex(COLUMN_HUNGER));
-                   String type = cursor.getString(cursor.getColumnIndex(COLUMN_TYPE));
+        try {
+            // Получение всех записей из таблицы
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ANIMAL, null);
 
-                   animals.add(new Animal(name, happiness, hunger, type));
-               } while (cursor.moveToNext());
-           }
-       } catch (Exception e) {
-           Log.e("PetDatabaseHelper", "Error getting all animals: " + e.getMessage());
-       } finally {
-           if (cursor != null) {
-               cursor.close();
-           }
-           db.close();
-       }
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+                    int happiness = cursor.getInt(cursor.getColumnIndex(COLUMN_HAPPINESS));
+                    int hunger = cursor.getInt(cursor.getColumnIndex(COLUMN_HUNGER));
+                    String type = cursor.getString(cursor.getColumnIndex(COLUMN_TYPE));
 
-       return animals;
-   }
+                    animals.add(new Animal(name, happiness, hunger, type));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("PetDatabaseHelper", "Error getting all animals: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return animals;
+    }
+
     public void deleteAnimal(Animal animal) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
-            // Удаление питомца по имени
+            // Удаление записи о питомце по имени
             db.delete(TABLE_ANIMAL, COLUMN_NAME + "=?", new String[]{animal.getName()});
             db.setTransactionSuccessful();
         } finally {
@@ -113,5 +113,4 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
-
 }

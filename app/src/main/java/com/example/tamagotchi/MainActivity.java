@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         addFragment = new Fragment_add();
 
-        animals.add(new Animal("Cat", 50, 50, "cat"));
-        animals.add(new Animal("Dog", 50, 50, "dog"));
-
         adapter.notifyDataSetChanged();
 
         animalListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -64,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       animalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        animalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Animal selectedAnimal = animals.get(position);// Получение выбранного животного
@@ -114,5 +111,3 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 }
-
-//синглтон
