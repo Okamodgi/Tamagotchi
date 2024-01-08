@@ -154,25 +154,26 @@ public class Pet extends AppCompatActivity {
         updateUI();
         saveAnimalToDatabase();
     }
+    private void increaseHappiness(int amount) {
+        happiness = Math.min(100, happiness + amount);
+        updateUI();
+        saveAnimalToDatabase();
+    }
 
     private void playWithTamagotchi() {
-        happiness = Math.min(100, happiness + 10);
-        updateUI();
-        saveAnimalToDatabase();
         Intent intent = new Intent(Pet.this, miniGameQuiz.class);
         startActivity(intent);
+        increaseHappiness(10);
     }
     private void playWithTamagotchi2() {
-        happiness = Math.min(100, happiness + 10);
-        updateUI();
-        saveAnimalToDatabase();
         Intent intent = new Intent(Pet.this, miniGameSearch.class);
         startActivity(intent);
+        increaseHappiness(10);
     }
 
     private void updateUI() {
-        happinessTextView.setText("Happiness: " + happiness);
-        hungerTextView.setText("Hunger: " + hunger);
+        happinessTextView.setText("счастье: " + happiness);
+        hungerTextView.setText("голод: " + hunger);
         if (happiness > 70 && hunger < 30) {
             tamagotchiImageView.setImageResource(R.drawable.over_happy);
         } else if (happiness > 30 && hunger < 70) {

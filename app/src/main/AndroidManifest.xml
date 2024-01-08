@@ -8,6 +8,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:enableOnBackInvokedCallback="true"
         android:icon="@drawable/logo"
+
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
@@ -17,6 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:screenOrientation="locked"
             android:enableOnBackInvokedCallback="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +29,17 @@
 
         <activity
             android:name=".Pet"
+            android:screenOrientation="locked"
             android:enableOnBackInvokedCallback="true"/>
 
         <activity
             android:name=".miniGameQuiz"
+            android:screenOrientation="locked"
             android:enableOnBackInvokedCallback="true"/>
 
         <activity
             android:name=".miniGameSearch"
+            android:screenOrientation="locked"
             android:enableOnBackInvokedCallback="true"/>
     </application>
 

@@ -58,6 +58,7 @@ public class miniGameQuiz extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Pet.adapter.notifyDataSetChanged();
+
                 onBackPressed();
             }
         });

@@ -28,8 +28,8 @@
 
     <ListView
         android:id="@+id/animalListView"
-        android:layout_width="416dp"
-        android:layout_height="333dp"
+        android:layout_width="354dp"
+        android:layout_height="345dp"
         android:layout_marginTop="28dp"
         android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toTopOf="@+id/addButton"
@@ -58,9 +58,7 @@
         android:layout_height="340dp"
         android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toTopOf="@+id/addButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <ImageView
