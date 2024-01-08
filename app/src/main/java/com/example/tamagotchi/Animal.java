@@ -10,6 +10,7 @@ public class Animal implements Serializable {
     private int imageResourceId;
 
     public Animal(String name, int happiness, int hunger, String type) {
+
         this.name = name;
         this.happiness = happiness;
         this.hunger = hunger;

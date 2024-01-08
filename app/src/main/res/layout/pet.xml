@@ -4,43 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/tamag"
+    android:background="#C56CDD"
     tools:context=".Pet">
 
 
-    <ImageView
-        android:id="@+id/tamagotchiImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="278dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="86dp"
-        android:layout_marginEnd="79dp"
-        android:src="@drawable/dovolnoe" />
-
-    <TextView
-        android:id="@+id/happinessTextView"
+    <androidx.constraintlayout.widget.Group
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:constraint_referenced_ids="happinessTextView,imagePet,hungerTextView" />
+
+    <ImageView
+        android:id="@+id/tam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="282dp"
-        android:layout_marginEnd="155dp"
-        android:layout_marginBottom="430dp"
-        android:text="Happiness: 50" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="140dp"
+        android:src="@drawable/tamagot" />
 
-    <TextView
-        android:id="@+id/hungerTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/feedButton"
+    <ImageView
+        android:id="@+id/tamagotchiImageView"
+        android:layout_width="97dp"
+        android:layout_height="81dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="397dp"
-        android:layout_marginEnd="168dp"
-        android:layout_marginBottom="163dp"
-        android:text="Hunger: 50" />
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="71dp"
+        android:layout_marginEnd="158dp"
+        android:src="@drawable/happy" />
 
     <Button
         android:id="@+id/feedButton"
@@ -50,7 +47,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Feed" />
+        android:text="покормить" />
 
     <Button
         android:id="@+id/playButton"
@@ -59,8 +56,8 @@
         android:layout_above="@+id/back"
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="-19dp"
-        android:text="Play" />
+        android:layout_marginBottom="-42dp"
+        android:text="играть" />
 
     <Button
         android:id="@+id/back"
@@ -70,20 +67,43 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="17dp"
         android:layout_marginBottom="19dp"
-        android:text="back" />
+        android:text="назад" />
+
+    <TextView
+        android:id="@+id/happinessTextView"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imagePet"
+        android:layout_alignStart="@+id/tam"
+        android:layout_alignEnd="@+id/tam"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center"
+        android:text="счастье: 50" />
 
     <ImageView
         android:id="@+id/imagePet"
-        android:layout_width="224dp"
-        android:layout_height="197dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="238dp"
-        android:layout_marginEnd="89dp"
-        android:layout_marginBottom="296dp"
-        android:src="@drawable/pop" />
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/popuga" />
+
+    <TextView
+        android:id="@+id/hungerTextView"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imagePet"
+        android:layout_alignStart="@+id/tam"
+        android:layout_alignEnd="@+id/tam"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="0dp"
+        android:gravity="center"
+        android:text="голод: 50" />
+
 
 </RelativeLayout>

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_main);
 
+
         animalListView = findViewById(R.id.animalListView);// Нахождение ListView в макете
         databaseHelper = new PetDatabaseHelper(this);// Инициализация PetDatabaseHelper
         animals = new ArrayList<>(databaseHelper.getAllAnimals());// Загрузка данных из бд
@@ -54,12 +55,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment_add addFragment = new Fragment_add();
+
+                // Добавляем новый экземпляр в контейнер
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container, addFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+
+                /*if (fragmentManager.findFragmentById(R.id.fragment_container) == null) {
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.fragment_container, addFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
+
+                }*/
             }
         });
+
 
         animalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -79,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         deleteAnimal(position);
                     }
                 })

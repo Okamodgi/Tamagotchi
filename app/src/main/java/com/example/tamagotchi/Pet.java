@@ -124,11 +124,11 @@ public class Pet extends AppCompatActivity {
                 type = loadedAnimal.getType();
 
                 if ("Кот".equals(type)) {
-                    imagePet.setImageResource(R.drawable.cats);
+                    imagePet.setImageResource(R.drawable.kot);
                 } else if ("Попугай".equals(type)) {
-                    imagePet.setImageResource(R.drawable.pop);
+                    imagePet.setImageResource(R.drawable.popuga);
                 } else {
-                    imagePet.setImageResource(R.drawable.dog);
+                    imagePet.setImageResource(R.drawable.sobak);
                 }
 
                 tamagotchiImageView.setImageResource(loadedAnimal.getImageResourceId());
@@ -174,11 +174,11 @@ public class Pet extends AppCompatActivity {
         happinessTextView.setText("Happiness: " + happiness);
         hungerTextView.setText("Hunger: " + hunger);
         if (happiness > 70 && hunger < 30) {
-            tamagotchiImageView.setImageResource(R.drawable.ochen_dovolnoe);
+            tamagotchiImageView.setImageResource(R.drawable.over_happy);
         } else if (happiness > 30 && hunger < 70) {
-            tamagotchiImageView.setImageResource(R.drawable.dovolnoe);
+            tamagotchiImageView.setImageResource(R.drawable.happy);
         } else {
-            tamagotchiImageView.setImageResource(R.drawable.not_dovolnoe);
+            tamagotchiImageView.setImageResource(R.drawable.don_t_happy);
         }
 
     }

@@ -99,6 +99,18 @@ public class PetDatabaseHelper extends SQLiteOpenHelper {
 
         return animals;
     }
+    public boolean isPetNameExists(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ANIMAL, null, COLUMN_NAME + "=?", new String[]{name}, null, null, null);
+
+        boolean exists = cursor.getCount() > 0;
+
+        cursor.close();
+        db.close();
+
+        return exists;
+    }
+
 
     public void deleteAnimal(Animal animal) {
         SQLiteDatabase db = getWritableDatabase();

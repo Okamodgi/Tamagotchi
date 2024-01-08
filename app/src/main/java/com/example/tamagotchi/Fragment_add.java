@@ -17,6 +17,7 @@ public class Fragment_add extends Fragment {
     private EditText name;
     private EditText type;
     private Drawable originalBackground;
+    private boolean dataSaved = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,9 +70,18 @@ public class Fragment_add extends Fragment {
                 if (editedName.isEmpty() || editedType.isEmpty()) {
                     Toast.makeText(requireContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
                 } else {
-                    Animal newAnimal = new Animal(editedName, 50, 50, editedType);
+                    PetDatabaseHelper petDatabaseHelper = new PetDatabaseHelper(requireContext());
 
+                    // Проверка наличия питомца с таким же именем
+                    if (petDatabaseHelper.isPetNameExists(editedName)) {
+                        Toast.makeText(requireContext(), "Питомец с таким именем существует", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Animal newAnimal = new Animal(editedName, 50, 50, editedType);
+
+                        Log.d("Fragment_add", "Before saving to database");
                     petDatabaseHelper.addPets(editedName, "50", "50", editedType);
+                    Log.d("Fragment_add", "Data saved to database: " + editedName + ", " + editedType);
+
 
                     Log.d("Fragment_add", "Data saved to database: " + editedName + ", " + editedType);
 
@@ -80,10 +90,8 @@ public class Fragment_add extends Fragment {
 
                     requireActivity().setResult(requireActivity().RESULT_OK, resultIntent);
                     requireActivity().getSupportFragmentManager().popBackStack();
-                    ((MainActivity) requireActivity()).updateAnimalList();
-
-                    requireActivity().finish();}
-            }
+                    ((MainActivity) requireActivity()).updateAnimalList();}
+            }}
     });
 
         Button backButton1 = view.findViewById(R.id.back1);
