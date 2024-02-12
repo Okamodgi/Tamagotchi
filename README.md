@@ -25,6 +25,8 @@ MySQL
 
 # __Установка__
 Отсканируйте QR-код
+
+
 ![image](https://github.com/Okamodgi/Tamagotchi/assets/123985263/1f339b4e-0702-491a-a223-f816dd2b44ea)
 
 # __Документация__
